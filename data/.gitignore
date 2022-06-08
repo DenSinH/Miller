@@ -1,0 +1,5 @@
+cache/request_cache.json
+
+__pycache__/
+.idea/
+venv/
