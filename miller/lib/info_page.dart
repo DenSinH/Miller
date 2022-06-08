@@ -11,6 +11,7 @@ class InfoPage extends StatelessWidget {
   const InfoPage({Key? key, required this.mill}) : super(key: key);
 
   Widget makeTitle(String text) {
+    // section header
     return Align(
       alignment: Alignment.center,
       child: Padding(
@@ -27,6 +28,7 @@ class InfoPage extends StatelessWidget {
   }
 
   Widget makeMeta(String key, String value) {
+    // make single key value pair of meta info
     return ListTile(
       title: Text(key),
       subtitle: Text(value),
@@ -35,16 +37,22 @@ class InfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // name
+    // [image]
+    // history
+    // info
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // name
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: makeTitle(mill.name)
               ),
+              // [image]
               Center(
                 child: CachedNetworkImage(
                   imageUrl: mill.image,
@@ -52,6 +60,7 @@ class InfoPage extends StatelessWidget {
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
+              // image credits
               Padding(
                 padding: const EdgeInsets.all(10),
                 child:
@@ -67,16 +76,20 @@ class InfoPage extends StatelessWidget {
                 ),
               ),
 
+              // history
               if (mill.history != null)
-                makeTitle("Geschiedenis"),
-              if (mill.history != null)
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    mill.history!,
-                    softWrap: true,
-                  ),
-                ),
+                ... [
+                  makeTitle("Geschiedenis"),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      mill.history!,
+                      softWrap: true,
+                    ),
+                  )
+                ],
+
+              // info
               makeTitle("Gegevens"),
               for (var entry in mill.meta.entries)
                 makeMeta(entry.key, entry.value)
