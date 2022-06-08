@@ -170,7 +170,6 @@ class GuessPageState extends State<GuessPage> {
                   child: GestureDetector(
                     behavior: hardFocused ? HitTestBehavior.translucent : HitTestBehavior.opaque,
                     onTap: () {
-                      print("tapped");
                       setState(() {
                         hardFocused = true;
                         hardFocusNode.requestFocus();
@@ -204,6 +203,7 @@ class GuessPageState extends State<GuessPage> {
               child: const Text("Bevestig"),
               onPressed: () {
                 if (selected.isNotEmpty) {
+                  hardFocused = false;
                   showResult(context, selected == mill!.name);
                 }
               },
