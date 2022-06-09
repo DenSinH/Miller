@@ -25,20 +25,11 @@ class GuessPageState extends State<GuessPage> {
   Mill? mill;
   List<String>? choices;
   bool hardFocused = false;
-  late FocusNode hardFocusNode;
 
   @override
   void initState() {
     super.initState();
-    hardFocusNode = FocusNode();
     chooseMill();
-  }
-
-  @override
-  void dispose() {
-    hardFocusNode.dispose();
-
-    super.dispose();
   }
 
   Future<void> loadMills() async {
@@ -82,6 +73,8 @@ class GuessPageState extends State<GuessPage> {
     showGeneralDialog(
       context: context,
       transitionBuilder: (context, a1, a2, widget) {
+        // don't allow back button to be pressed
+        // this would mess up the navigator stack
         return WillPopScope(
           onWillPop: () async => false,
           child: Transform.scale(
@@ -110,7 +103,7 @@ class GuessPageState extends State<GuessPage> {
         // message to be displayed before window is opened
         return AlertDialog(
           shape: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
-          title: Center(child: correct ? Text("Goed") : Text("Fout")),
+          title: Center(child: correct ? const Text("Goed") : const Text("Fout")),
           backgroundColor: correct ? Colors.green : Colors.red,
         );
       }
@@ -119,6 +112,8 @@ class GuessPageState extends State<GuessPage> {
 
   Widget makeEasyOptionButton(BuildContext context, String text) {
     // a single easy mode option button
+    assert(mill != null);
+
     return Expanded(
       flex: 1,
       child: InkWell(
@@ -162,6 +157,8 @@ class GuessPageState extends State<GuessPage> {
 
   Widget hardOptions(BuildContext context) {
     // autocomplete field with all mill names as options
+    assert(mill != null);
+
     String selected = "";
 
     return Padding(
@@ -170,6 +167,7 @@ class GuessPageState extends State<GuessPage> {
         children: [
           Row(
             children: [
+              // only show back button if textbox is selected
               if (hardFocused)
                 IconButton(
                   onPressed: () { setState(() { hardFocused = false; }); },
@@ -186,9 +184,10 @@ class GuessPageState extends State<GuessPage> {
                     onTap: () {
                       setState(() {
                         hardFocused = true;
-                        hardFocusNode.requestFocus();
                       });
                     },
+
+                    // block clicks on textfield when image is shown
                     child: IgnorePointer(
                       ignoring: !hardFocused,
                       child: Autocomplete(
@@ -263,6 +262,7 @@ class GuessPageState extends State<GuessPage> {
   }
 
   Widget settings(BuildContext context) {
+    // difficulty buttons
     return SizedBox(
       height: 40,
       child: Row(
@@ -298,9 +298,25 @@ class GuessPageState extends State<GuessPage> {
                       child: CachedNetworkImage(
                         imageUrl: mill!.image,
                         placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                        errorWidget: (context, url, error) => Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.error,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              "Afbeelding laden mislukt",
+                              style: TextStyle(
+                                  color: Colors.grey
+                              )
+                            ),
+                          ]
+                        )
                       ),
                     ),
+
+                    // skip button
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Padding(

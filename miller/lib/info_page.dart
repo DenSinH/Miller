@@ -52,6 +52,7 @@ class InfoPage extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: makeTitle(mill.name)
               ),
+
               // [image]
               Center(
                 child: CachedNetworkImage(
@@ -60,6 +61,7 @@ class InfoPage extends StatelessWidget {
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
+
               // image credits
               Padding(
                 padding: const EdgeInsets.all(10),
